@@ -1,74 +1,34 @@
 const express = require("express");
 const app = express();
-
-const { Todo } = require("./models/todo");
+const { init, User, Todo } = require("./models/init");
 
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
+const UserController = require("./controlles/UserController");
+const TodoController = require("./controlles/TodoController");
 
-app.get("/todos", async (req, res, next) => {
+const userController = new UserController();
+const todoController = new TodoController();
+const { auth } = require("./middleware/auth");
+
+app.post("/reg", userController.registration);
+app.post("/auth", userController.authorization);
+app.get("/me", auth, userController.getMe);
+
+app.post("/todos", auth, todoController.create);
+app.get("/todos", auth, todoController.getAll);
+app.get("/todos/:id", auth, todoController.getOne);
+
+app.post("/refresh-token", (req, res) => {
   try {
-    const todos = await Todo.findAll({});
-
-    res.status(200).json({
-      data: todos,
-      paginatorInfo: {
-        page: 1,
-        perPage: 50,
-        count: todos.length,
-      },
-    });
-  } catch (e) {}
+    const { token } = req.body;
+  } catch (e) {
+    return res.status(400);
+  }
 });
 
-app.get("/todo/:id", async (req, res, next) => {
-  try {
-    const todo = await Todo.findByPk(req.params.id);
-
-    res.status(200).json({
-      get_todo: todo,
-    });
-  } catch (e) {}
-});
-
-app.post("/todos", async (req, res, next) => {
-  try {
-    const todo = await Todo.create(req.body);
-
-    res.status(201).json({
-      create_todo: todo,
-    });
-  } catch (e) {}
-});
-
-app.patch("/todo/:id", async (req, res, next) => {
-  try {
-    const todo = await Todo.findByPk(req.params.id);
-    if (todo) {
-      todo.title = req.body.title;
-      todo.completed = req.body.completed;
-    }
-
-    await todo.save();
-
-    res.status(202).json({
-      update_todo: todo,
-    });
-  } catch (e) {}
-});
-
-app.delete("/todo/:id", async (req, res, next) => {
-  try {
-    const todo = await Todo.findByPk(req.params.id);
-    await todo.destroy();
-
-    res.status(204).json({
-      delete_todo: todo,
-    });
-  } catch (e) {}
-});
-
-app.listen(PORT, () => {
-  console.log("express started");
+app.listen(PORT, async () => {
+  await init();
+  console.log("Server has been started on " + PORT + " port");
 });
