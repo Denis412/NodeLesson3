@@ -31,4 +31,10 @@ io.on("connection", (socket) => {
   });
 });
 
+setInterval(() => {
+  io.emit("ping", {
+    ts: new Date(),
+  });
+}, 10_000);
+
 httpServer.listen(3001);

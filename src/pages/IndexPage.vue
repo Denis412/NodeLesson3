@@ -1,22 +1,27 @@
 <template>
-  <q-page class="flex flex-center">
-    <q-input outlined v-model="message" placeholder="Введите сообщение">
-      <template #append>
-        <q-icon name="send" class="cursor-pointer" @click="sendMessage" />
-      </template>
-    </q-input>
+  <q-page class="main-page">
+    <socket-chat :id="currentChat" />
   </q-page>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { io } from "socket.io-client";
+import { inject, onMounted } from "vue";
+import socket from "src/lib/socketIO";
 
-const socket = io("http://localhost:3001");
+import SocketChat from "src/components/SocketChat.vue";
 
-const message = ref("");
+const currentChat = inject("currentChat");
 
-const sendMessage = () => {
-  socket.emit("message", message.value);
-};
+onMounted(() => {
+  socket.on("ping", (arg) => {
+    console.log("ping", arg);
+  });
+});
 </script>
+
+<style scoped lang="scss">
+.main-page {
+  position: relative;
+  min-height: 100vh;
+}
+</style>

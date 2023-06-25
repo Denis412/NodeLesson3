@@ -1,40 +1,34 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        />
-
-        <q-toolbar-title> Quasar App </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
-      </q-toolbar>
-    </q-header>
-
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
-      <q-list>
-        <q-item-label header> Правый дровер </q-item-label>
-      </q-list>
-    </q-drawer>
+  <q-layout view="hHh Lpr lFf">
+    <main-header />
+    <main-drawer v-model="leftDrawerOpen" @toggle-chat="toggleChat" />
 
     <q-page-container>
       <router-view />
     </q-page-container>
+
+    <main-footer />
   </q-layout>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { provide, ref } from "vue";
+
+import MainHeader from "src/components/MainHeader.vue";
+import MainDrawer from "src/components/MainDrawer.vue";
+import MainFooter from "src/components/MainFooter.vue";
 
 const leftDrawerOpen = ref(false);
+const currentChat = ref(1);
 
 const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 };
+
+const toggleChat = (chatId) => {
+  currentChat.value = chatId;
+};
+
+provide("currentChat", currentChat);
+provide("toggleLeftDrawer", toggleLeftDrawer);
 </script>
