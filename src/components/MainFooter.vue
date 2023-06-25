@@ -14,13 +14,15 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, inject } from "vue";
+
 import socket from "src/lib/socketIO";
 
+const chatStore = inject("chatStore");
 const message = ref("");
 
 const sendMessage = () => {
-  socket.emit("message", message.value);
+  chatStore.pushSendingMessages(message.value, true);
 };
 </script>
 

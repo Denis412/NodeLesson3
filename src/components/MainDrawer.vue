@@ -5,15 +5,22 @@
         Список чатов
       </q-item-label>
 
-      <socket-chat-link v-for="n in 5" :id="n" name="чат" @select="toggleChat">
-      </socket-chat-link>
+      <socket-chat-link
+        v-for="n in 5"
+        :id="n"
+        name="чат"
+        @select="toggleChat"
+        :selected="chatStore.getCurrentChat()"
+      />
     </q-list>
   </q-drawer>
 </template>
 
 <script setup>
+import { inject } from "vue";
 import SocketChatLink from "src/components/SocketChatLink.vue";
 
+const chatStore = inject("chatStore");
 const emit = defineEmits(["toggleChat"]);
 
 const toggleChat = (chatId) => {

@@ -20,14 +20,17 @@ app.listen(3000, async () => {
 });
 
 io.on("connection", (socket) => {
-  socket.emit("connected", "hello client!");
-
-  socket.on("disconnect", (reason) => {
-    console.log("disconnect " + reason);
+  socket.on("roomConnect", (roomId) => {
+    socket.join(`room:${roomId}`);
   });
 
-  socket.on("message", (arg) => {
-    console.log(arg);
+  socket.on("roomDisconnect", (roomId) => {
+    socket.leave(`room:${roomId}`);
+  });
+
+  socket.on("message", (data) => {
+    console.log("message", data);
+    io.to(`room:${data.room_id}`).emit("sendedMessage", data);
   });
 });
 
