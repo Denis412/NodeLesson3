@@ -1,16 +1,12 @@
 const express = require("express");
 const app = express();
-const { init, User, Todo } = require("./models/init");
+const { userController, todoController } = require("./controlles/init");
+const { auth } = require("./middleware/auth");
+
+const { init } = require("./models/init");
 
 app.use(express.json());
-
 const PORT = process.env.PORT || 3000;
-const UserController = require("./controlles/UserController");
-const TodoController = require("./controlles/TodoController");
-
-const userController = new UserController();
-const todoController = new TodoController();
-const { auth } = require("./middleware/auth");
 
 app.post("/reg", userController.registration);
 app.post("/auth", userController.authorization);

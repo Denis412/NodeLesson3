@@ -1,4 +1,5 @@
 const Todo = require("../models/todo");
+const { Op } = require("sequelize");
 
 class TodoController {
   async create(req, res) {
@@ -22,7 +23,11 @@ class TodoController {
 
   async getAll(req, res) {
     try {
-      const todos = await Todo.findAll();
+      const todos = await Todo.findAll({
+        where: {
+          UserId: req.authUser.id,
+        },
+      });
 
       return res.status(200).json({ data: todos });
     } catch (e) {}
@@ -30,7 +35,11 @@ class TodoController {
 
   async getOne(req, res) {
     try {
-      const todo = await Todo.findByPk(req.params.id);
+      const todo = await Todo.findOne({
+        where: {
+          [Op.and]: [{ UserId: req.authUser.id }, { id: req.params.id }],
+        },
+      });
 
       return res.status(200).json({
         get_todo: todo,
