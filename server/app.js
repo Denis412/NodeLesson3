@@ -4,6 +4,8 @@ const { Server } = require("socket.io");
 
 const app = express();
 
+let onlineUsers = 0;
+
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
@@ -20,17 +22,30 @@ app.listen(3000, async () => {
 });
 
 io.on("connection", (socket) => {
-  socket.on("roomConnect", (roomId) => {
-    socket.join(`room:${roomId}`);
+  socket.emit("refreshOnline", ++onlineUsers);
+
+  socket.on("roomConnect", async (roomId) => {
+    const roomSockets = io.sockets.adapter.rooms.get(`room:${roomId}`);
+
+    if (roomSockets && roomSockets.size >= 2 && roomId !== 1) {
+      socket.emit("roomFull", "Комната заполнена");
+    } else {
+      socket.emit("roomFree", "Комната свободна");
+      socket.join(`room:${roomId}`);
+    }
   });
 
-  socket.on("roomDisconnect", (roomId) => {
+  socket.on("roomDisconnect", async (roomId) => {
     socket.leave(`room:${roomId}`);
   });
 
   socket.on("message", (data) => {
-    console.log("message", data);
+    console.log("message server", data);
     io.to(`room:${data.room_id}`).emit("sendedMessage", data);
+  });
+
+  socket.on("disconnect", (data) => {
+    socket.emit("refreshOnline", --onlineUsers);
   });
 });
 

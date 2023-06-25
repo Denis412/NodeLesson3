@@ -5,9 +5,7 @@
 <script setup>
 import { computed, inject } from "vue";
 
-const { message } = defineProps({
-  message: Object,
-});
+const { message } = defineProps({ message: Object });
 
 const chatStore = inject("chatStore");
 const userId = chatStore.getUserID();

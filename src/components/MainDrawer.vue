@@ -6,7 +6,7 @@
       </q-item-label>
 
       <socket-chat-link
-        v-for="n in 5"
+        v-for="n in 4"
         :id="n"
         name="чат"
         @select="toggleChat"

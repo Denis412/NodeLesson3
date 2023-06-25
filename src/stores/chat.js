@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
+import { topNegativeNotify } from "src/helpers/notifications";
 
 import socket from "src/lib/socketIO";
 
@@ -21,7 +22,6 @@ export const useChatStore = defineStore("chat", () => {
   const pushSendingMessages = (message, is_server) => {
     if (!message.message && !message) return;
 
-    console.log("message", message);
     if (is_server) {
       socket.emit("message", {
         message,
@@ -41,9 +41,15 @@ export const useChatStore = defineStore("chat", () => {
   };
 
   const selectChat = (chatId) => {
-    socket.emit("roomDisconnect", currentChat.value);
+    socket.on("roomFull", () => {
+      topNegativeNotify("Комната заполнена");
+    });
 
-    currentChat.value = chatId;
+    socket.on("roomFree", () => {
+      socket.emit("roomDisconnect", currentChat.value);
+
+      currentChat.value = chatId;
+    });
 
     socket.emit("roomConnect", chatId);
   };

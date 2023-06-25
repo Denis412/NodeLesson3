@@ -25,9 +25,7 @@ const chatStore = inject("chatStore");
 
 const chatId = chatStore.getCurrentChat();
 
-onMounted(() => {
-  socket.emit("roomConnect", chatId);
-});
+onMounted(() => socket.emit("roomConnect", chatId));
 </script>
 
 <style scoped lang="scss">

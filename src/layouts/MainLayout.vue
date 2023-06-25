@@ -16,6 +16,9 @@ import { onMounted, provide, ref } from "vue";
 import { v4 as uuidv4 } from "uuid";
 
 import { useChatStore } from "src/stores/chat";
+import { topNegativeNotify } from "src/helpers/notifications";
+
+import socket from "src/lib/socketIO";
 
 import MainHeader from "src/components/MainHeader.vue";
 import MainDrawer from "src/components/MainDrawer.vue";
