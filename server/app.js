@@ -20,7 +20,15 @@ app.listen(3000, async () => {
 });
 
 io.on("connection", (socket) => {
-  console.log("Подключен клиент", socket);
+  socket.emit("connected", "hello client!");
+
+  socket.on("disconnect", (reason) => {
+    console.log("disconnect " + reason);
+  });
+
+  socket.on("message", (arg) => {
+    console.log(arg);
+  });
 });
 
 httpServer.listen(3001);
