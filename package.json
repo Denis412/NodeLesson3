@@ -8,17 +8,22 @@
   "scripts": {
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
-    "build": "quasar build"
+    "build": "quasar build",
+    "server:dev": "nodemon app.js"
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
+    "express": "^4.18.2",
     "quasar": "^2.6.0",
+    "socket.io": "^4.7.0",
+    "socket.io-client": "^4.7.0",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0"
   },
   "devDependencies": {
     "@quasar/app-vite": "^1.0.0",
     "autoprefixer": "^10.4.2",
+    "nodemon": "^2.0.22",
     "postcss": "^8.4.14"
   },
   "engines": {

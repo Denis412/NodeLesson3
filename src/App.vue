@@ -2,10 +2,8 @@
   <router-view />
 </template>
 
-<script>
-import { defineComponent } from 'vue'
+<script setup>
+import { io } from "socket.io-client";
 
-export default defineComponent({
-  name: 'App'
-})
+const socket = io("http://localhost:3001");
 </script>
