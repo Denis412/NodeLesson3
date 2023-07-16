@@ -18,11 +18,22 @@ import { ref, inject } from "vue";
 
 import socket from "src/lib/socketIO";
 
-const chatStore = inject("chatStore");
+const currentChat = inject("currentChat");
 const message = ref("");
 
 const sendMessage = () => {
-  chatStore.pushSendingMessages(message.value, true);
+  // chatStore.pushSendingMessages(message.value, true);
+
+  console.log("m", {
+    room_id: currentChat.value,
+    name: "Denis",
+    message: message.value,
+  });
+  socket.emit("message", {
+    room_id: currentChat.value,
+    name: "Denis",
+    message: message.value,
+  });
 };
 </script>
 

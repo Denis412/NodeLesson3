@@ -1,5 +1,6 @@
 <template>
   <q-list>
+    <!-- <pre>{{ messages }}</pre> -->
     <div v-for="message in messages">
       <message-item :message="message" />
     </div>
@@ -7,17 +8,19 @@
 </template>
 
 <script setup>
-import { inject } from "vue";
+import { inject, onMounted, ref } from "vue";
 import socket from "src/lib/socketIO";
 
 import MessageItem from "./MessageItem.vue";
 
 const chatStore = inject("chatStore");
-const messages = chatStore.getCurrentMessages();
+const messages = ref([]);
 
-socket.on("sendedMessage", (data) => {
-  console.log("hi", data);
-  chatStore.pushSendingMessages(data);
+onMounted(() => {
+  socket.on("history", (data) => {
+    messages.value = data;
+    console.log("his", data);
+  });
 });
 </script>
 

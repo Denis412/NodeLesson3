@@ -1,9 +1,8 @@
 <template>
   <div class="chat-wrapper">
     <div class="chat-header">
-      <h4 class="q-ma-none text-center">Чат №{{ chatId }}</h4>
+      <h4 class="q-ma-none text-center">Чат №{{ currentChat }}</h4>
     </div>
-
     <div class="chat-messages-area">
       <div class="chat-messages-area-inner">
         <messages-list />
@@ -13,19 +12,16 @@
 </template>
 
 <script setup>
-import { inject, watch, onMounted } from "vue";
-import { useChatStore } from "src/stores/chat";
-
-import socket from "src/lib/socketIO";
+import { inject, onMounted } from "vue";
 
 import MessagesList from "src/components/MessagesList.vue";
 
 const { id } = defineProps({ id: Number });
-const chatStore = inject("chatStore");
+const currentChat = inject("currentChat");
 
-const chatId = chatStore.getCurrentChat();
-
-onMounted(() => socket.emit("roomConnect", chatId));
+onMounted(() => {
+  // socket.emit("roomConnect", currentChat.value);
+});
 </script>
 
 <style scoped lang="scss">

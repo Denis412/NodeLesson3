@@ -1,7 +1,11 @@
 <template>
   <q-layout view="hHh Lpr lFf">
     <main-header />
-    <main-drawer v-model="leftDrawerOpen" @toggle-chat="toggleChat" />
+    <main-drawer
+      v-model="leftDrawerOpen"
+      @toggle-chat="toggleChat"
+      :rooms="rooms"
+    />
 
     <q-page-container>
       <router-view />
@@ -27,22 +31,26 @@ import MainFooter from "src/components/MainFooter.vue";
 const chatStore = useChatStore();
 const leftDrawerOpen = ref(false);
 const currentChat = ref(1);
+const rooms = ref([]);
 
 const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 };
 
-const toggleChat = (chatId) => {
-  currentChat.value = chatId;
-
-  chatStore.selectChat(chatId);
-};
+const toggleChat = (chatId) => (currentChat.value = chatId);
 
 provide("chatStore", chatStore);
 provide("currentChat", currentChat);
 provide("toggleLeftDrawer", toggleLeftDrawer);
 
 onMounted(() => {
-  chatStore.setUserId(uuidv4());
+  socket.on("get-rooms", (data) => {
+    console.log("data", data);
+    rooms.value = data;
+  });
+
+  socket.on("rooms_list_changed", (data) => {
+    rooms.value.push(data);
+  });
 });
 </script>
